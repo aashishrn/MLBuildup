@@ -39,7 +39,7 @@ y = dataset.iloc[:, -1].value
 #Since we found only columns- 1,6,13 to have missing values
 #and all are string type
 #We use Pandas fillna to fill in values
-temp = pd.DataFrame(X[:, 1, 6, 13])
+temp = pd.DataFrame(X[:, [1, 6, 13]])
 
 #To check most frequent element
 temp[0].value_counts()
@@ -51,7 +51,7 @@ temp[0] = temp[0].fillna(' Private')
 temp[1] = temp[1].fillna(' Prof-specialty')
 temp[2] = temp[2].fillna(' United-States')
 
-X[1, 6, 13] = temp
+X[;, [1, 6, 13]] = temp
 del(temp)
 
 from sklearn.preprocessing import LabelEncoder
