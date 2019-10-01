@@ -4,9 +4,9 @@
 Author: Ashish Ranjan
 Lang: Python3.7
 IDE: Spyder 3.3 (Anaconda3)
-Data: Bank (available on UCI repository)
 
 Sentiment Analysis of tweets for using NLTK, GaussianNB using words used in tweets.
+After that same technique is applied on AT&T reviews.
 '''
 
 import numpy as np
@@ -73,3 +73,54 @@ log_reg.fit(X_train, y_train)
 log_reg.score(X_test, y_test)
 
 print(cv.get_feature_names())
+
+##############################################################
+
+dataset = pd.read_csv('At&T_Data.csv')
+dataset['Titles'][5]
+dataset['Reviews'][8]
+
+def processed(i, title):
+    processed_text = []   
+    for i in range(i):       
+        text = re.sub('AT&T', ' ', dataset[title][i])
+        text = re.sub('[^a-zA-Z#]', ' ', dataset[title][i])
+        text = text.lower()
+        text = text.split()
+        text = [ps.stem(token) for token in text if not token in stopwords.words('english') ]
+        text = ' '.join(text)
+        processed_text.append(text)
+          
+    return processed_text
+
+processed_title = processed(113, 'Titles')
+processed_reviews = processed(113, 'Reviews')
+#X = [processed_title, processed_reviews]
+y = dataset['Label'].values
+
+from sklearn.feature_extraction.text import CountVectorizer
+cv = CountVectorizer(max_features = 4000)
+X1 = cv.fit_transform(processed_title)
+X1 = X1.toarray()
+X2 = cv.fit_transform(processed_reviews)
+X2 = X2.toarray()
+
+X = np.concatenate((X1, X2), axis=1)
+
+from sklearn.preprocessing import LabelEncoder
+lab = LabelEncoder()
+y = lab.fit_transform(y)
+
+from sklearn.model_selection import train_test_split
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = .25)
+
+from sklearn.naive_bayes import GaussianNB
+n_b = GaussianNB()
+n_b.fit(X_test, y_test)
+
+n_b.score(X_train, y_train)
+
+
+a = np.array([[1, 2], [3, 4]])
+b = np.array([[5, 6], [7, 8]])
+np.concatenate((a, b), axis=1)
